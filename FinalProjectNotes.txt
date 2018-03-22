@@ -1,0 +1,18 @@
+An Interdisciplinary Topic from Comp. Phys. text
+	Probably protein folding
+	Maybe neural networks or cellular automata
+	
+C++
+	Much more widely used
+	Might be useful exposure for future work in genetics
+	Fast
+
+Fortran
+	Easier array handling
+	Faster
+	Legacy code
+	
+Python
+	Much more widely used
+	Useful for genetics
+	Usually slow, but writing in Jupyter and using Jit could help.
