@@ -1,0 +1,190 @@
+\documentclass[12pt]{article} 
+\usepackage{graphicx} 
+\usepackage{amsmath}
+\begin{document} 
+\linespread{1.3} 
+\setlength\parindent{0pt}
+\title{P3800 Project 4: The Protein-Folding Problem and Levinthal's Paradox} 
+\date{Written April 2018} 
+\author{John Healey}
+\maketitle
+
+
+\section{Introduction}
+The Protein-Folding Problem is an inter-disciplinary topic, involving Physics and Biology, so I will start by giving an 
+overview of the biological concepts needed to understand the problem. A protein is a molecule that plays a particular 
+role in the body. Proteins are made up of simple organic compunds called amino acids, connected end to end to form 
+a chain. The types of amino acids that make up the protein, and the way in which they are arranged, determine the 
+protein's ability to perform its biological function. This is not only based on the order of the acids in the chain, 
+which determines its \emph{primary structure}, but also on the shape of the chain itself, i.e., how it is folded. 
+The way in which the chain is folded is known as its \emph{tertiary structure}.
+
+In order for a protein to perform its biological function, then, it must be folded in exactly the right way, and if 
+it becomes unfolded, it must return to its correct tertiary structure. However, for a protein consisting of 300 amino 
+acids, and assuming 4 possible orientation angles between connected acids, there are 4^{N} \approx 10^180$ possible 
+tertiary structures arising from a single primary structure. Despite this inconceivably large amount of possible 
+structures, not only is a protein able to consistently go from an unfolded state to its correct tertiary structure, 
+it is able to do so in seconds. Even if the protein spent as little as $10^-13$s in each intermediate state, the folding 
+process would still take longer than the age of the universe. This is known as Levinthal's Paradox. How the protein 
+knows which tertiary is correct is the Protein-Folding Problem.
+
+
+\section{Method of Investigation}
+To try to understand how protein folding might work, I 
+
+\begin{equation}
+E = -J \sum_{i,j}^{NN} S_i S_j 
+\end{equation}
+
+\begin{equation}
+S =  \sum_{i=1}^{N} S_i.
+\end{equation}
+
+
+By taking thermal averages over Monte Carlo steps for these quantities, we were able to examine more interesting aspects of 
+the system, including its magnetization M, heat capacity $C_v$, and magnetic susceptibility $\chi$. These quantities were 
+measured using the following equations:
+
+
+\begin{equation}
+M = \frac{1}{N} \langle |M| \rangle
+\end{equation}
+
+\begin{equation}
+C_v = \frac{1}{N} \frac{1}{k_B T^2} \Big[ \langle E^2 \rangle - \langle E \rangle ^2 \Big]
+\end{equation}
+
+\begin{equation}
+\chi = \frac{1}{N} \frac{1}{k_B T} \Big[ \langle S^2 \rangle - \langle |S| \rangle ^2 \Big].
+\end{equation}
+
+
+\section{Simulation}
+
+The simulation measured the aforementioned quantities at a range of temperatures around the critical temperature $T_c \approx 2.269$, 
+at which the magnetization of the system goes from 0 to 1 (approaching from the higher temperature), and the heat capacity 
+and magnetic susceptibility diverge (for an infinite lattice). By starting the system at a higher temperature and cooling 
+it down, we expect that the spins will tend toward a more aligned state, since the energy will tend to decrease. So, the 
+magnetization of the lattice should increase as the temperature decreases. With this in mind, we start with an initially random 
+configuration of the lattice at the relatively high starting temperature. In order to let the system equilibrate 
+without effecting thermal averages, we discard the first $10 \%$ of the runs. 
+
+
+\section{Coding Issues}
+
+The main issue faced in this project was getting the program to run in a reasonable amount of time for large lattice 
+sizes L and Monte Carlo Sweeps MCS. My simulation was written in Python, an interpreted language, which caused it to run for 
+a very long time for lattice sizes of 100, or MCS of 100,000. The program was able to run within a day with $L = 100, 
+M = 10,000$, but this was the largest viable MCS I could use with L = 100. I was able to get a speed-up of approximately 
+$20 \%$ by minimizing the amount of times I made calls to random number generators, and increasing my usage of the 
+Python scientific computing library, NumPy. I also examined the optimizing compiler Numba, which shows definite potential 
+for increasing the speed of my program, but has yet to have the desired effect.
+
+
+\section{Results}
+
+I ran my simulation using a variety of lattice sizes and Monte Carlo Sweeps. The results for the various quantities of 
+interest are shown below. As expected, the larger lattice sizes had steeper transitions from $M = 0$ to $M = 1$, and 
+higher peaks in the divergence of $C_v$ and $\chi$. The peaks were also more centered on $T_c$ for the larger lattices, 
+making them more accurate for predictions of this quantity. This is because they more closely approximated an infinite lattice, 
+which is the model used in the analytical predictions. I also noticed that the higher MCS runs produced much smoother 
+plots that better fit the expected results. This makes sense, since the quantities measured are taken as thermal averages 
+over MCS, so the more MCS we took, the smoother these averages would be. Also shown below is an illustration of how the spins 
+aligned as the simulation progressed. As can be seen, at higher temperatures, there were approximately as many spins in the 
+up-state as those in the down state. Near the critical temperature, where the magnetization of the system transfers from zero 
+to one, most of the spins are in the up-state. Finally, as the temperature is lowered past the critical temperature, most of 
+the spins are in the down-state. This increase in alignment with decreasing temperature agreed with the expected behaviour 
+of such a system.
+
+
+$T = 3.15$
+
+$$
+\begin{matrix}
+-1 & -1 & -1 & +1 & -1 & -1 & +1 & +1 & +1 & +1 \\
+-1 & -1 & -1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 \\
+-1 & -1 & -1 & -1 & -1 & +1 & +1 & -1 & +1 & -1 \\
+-1 & -1 & -1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 \\
+-1 & -1 & -1 & +1 & -1 & -1 & +1 & -1 & -1 & -1 \\
+-1 & -1 & -1 & -1 & -1 & -1 & +1 & +1 & +1 & +1 \\
+-1 & -1 & +1 & +1 & -1 & -1 & +1 & +1 & +1 & -1 \\
+-1 & -1 & +1 & -1 & -1 & +1 & +1 & +1 & -1 & -1 \\
++1 & -1 & -1 & -1 & +1 & +1 & +1 & +1 & +1 & +1 \\
+-1 & -1 & -1 & +1 & +1 & +1 & +1 & +1 & +1 & +1
+\end{matrix}
+$$
+
+\newpage
+
+$T = 2.25$
+
+$$
+\begin{matrix}
+-1 & +1 & +1 & +1 & -1 & +1 & +1 & +1 & +1 & +1 \\
++1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 \\
++1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 \\
++1 & +1 & +1 & +1 & -1 & +1 & +1 & -1 & -1 & +1 \\
++1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 & -1 & +1 \\
++1 & +1 & +1 & +1 & +1 & +1 & +1 & -1 & +1 & +1 \\
++1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 \\
++1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 \\
++1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 & +1 \\
++1 & +1 & +1 & +1 & -1 & +1 & +1 & +1 & +1 & +1 \\
+\end{matrix}
+$$
+
+
+$T = 1.15$
+$$
+\begin{matrix}
+-1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 \\
+-1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 \\
+-1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 \\
+-1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 \\
+-1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 \\
+-1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 \\
+-1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 \\
+-1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 \\
+-1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 \\
+-1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1
+\end{matrix}
+$$
+
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{ising_plotMTall.png} 
+\label{magnetization_results}
+\end{figure}
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{ising_plot100000M.PNG} 
+\caption{ Magnetization as a function of Temperature for MCS 100, 1,000, 10,000, 100,000 }
+\label{magnetization_results}
+\end{figure}
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{ising_plot100C.PNG} 
+\label{heatcapacity_results}
+\end{figure}
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{ising_plotCTall.png} 
+\caption{ Heat capacity as a function of Temperature for MCS 100, 1,000, 10,000, 100,000 }
+\label{heatcapacity_results}
+\end{figure}
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{ising_plotXTall.png} 
+\label{magnetization_results}
+\end{figure}
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{ising_plot100000X.PNG} 
+\caption{ Magnetic Susceptibility as a function of Temperature for MCS 100, 1,000, 10,000, 100,000 }
+\label{magnetization_results}
+\end{figure}
+
+
+
+
+\end{document} 
